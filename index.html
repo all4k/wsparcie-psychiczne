@@ -4,10 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wsparcie Psychiczne - Aplikacja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .welcome-text {
+            color: #34495e;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #27ae60;
+        }
+        .btn-secondary:hover {
+            background-color: #229954;
+        }
+        .features {
+            margin-top: 40px;
+            text-align: left;
+        }
+        .feature {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Witaj w aplikacji Wsparcie Psychiczne!</h1>
-    <p>To jest początek Twojej aplikacji zdrowia psychicznego.</p>
-    <p>Wkrótce dodamy więcej funkcji!</p>
+    <div class="container">
+        <h1>💚 Witaj w aplikacji Wsparcie Psychiczne!</h1>
+        
+        <div class="welcome-text">
+            <p>Bezpieczne miejsce dla Twojego zdrowia psychicznego.</p>
+            <p>Anonimowe, profesjonalne, dostępne 24/7.</p>
+        </div>
+
+        <div>
+            <a href="register.html" class="btn">🛡️ Rozpocznij Anonimowo</a>
+            <a href="#" class="btn btn-secondary">🆘 Natychmiastowa Pomoc</a>
+        </div>
+
+        <div class="features">
+            <h3>Co oferujemy:</h3>
+            <div class="feature">
+                <strong>🤖 Chatbot AI</strong> - Natychmiastowe wsparcie w trudnych chwilach
+            </div>
+            <div class="feature">
+                <strong>👥 Forum Wsparcia</strong> - Anonimowa społeczność wzajemnej pomocy
+            </div>
+            <div class="feature">
+                <strong>📚 Zasoby Edukacyjne</strong> - Artykuły i materiały od specjalistów
+            </div>
+            <div class="feature">
+                <strong>👨‍⚕️ Profesjonaliści</strong> - Dostęp do terapeutów i psychologów
+            </div>
+        </div>
+    </div>
 </body>
 </html>
