@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, send_file
+from flask import Flask, send_from_directory, render_template
 import os
 
 app = Flask(__name__)
@@ -6,6 +6,10 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
+
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')
 
 @app.route('/<path:filename>')
 def serve_file(filename):
