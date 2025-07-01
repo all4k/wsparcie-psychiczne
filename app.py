@@ -41,7 +41,7 @@ def api_chat():
         return jsonify({"response": ai_response})
         
     except Exception as e:
-        print(f"Błąd API: {e}")
+        app.logger.error(f"Błąd API: {e}")
         return jsonify({"error": str(e)}), 500
         
 if __name__ == '__main__':
