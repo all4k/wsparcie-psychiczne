@@ -94,47 +94,28 @@
             // Wyczyść input
             input.value = '';
             
-           // Wywołaj prawdziwe API
-getAIResponse(message).then(response => {
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'message ai-message';
-    aiDiv.textContent = response;
-    messages.appendChild(aiDiv);
-    messages.scrollTop = messages.scrollHeight;
-}).catch(error => {
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'message ai-message';
-    aiDiv.textContent = 'Przepraszam, wystąpił błąd. Spróbuj ponownie.';
-    messages.appendChild(aiDiv);
-    messages.scrollTop = messages.scrollHeight;
-});
+            // Symuluj odpowiedź AI
+            setTimeout(() => {
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message ai-message';
+                aiDiv.textContent = getAIResponse(message);
+                messages.appendChild(aiDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
             
             messages.scrollTop = messages.scrollHeight;
         }
         
-        async function getAIResponse(userMessage) {
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                message: userMessage
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Błąd sieci');
+        function getAIResponse(userMessage) {
+            const responses = [
+                "Rozumiem, że to może być trudne. Chcesz mi opowiedzieć więcej?",
+                "To brzmi jak ważne doświadczenie. Jak się z tym czujesz?",
+                "Dziękuję za podzielenie się tym ze mną. Jesteś bardzo odważny/a.",
+                "Każdy ma prawo do swoich uczuć. Twoje emocje są ważne.",
+                "Pamiętaj, że nie jesteś sam/a. Jestem tutaj, żeby Cię wysłuchać."
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
         }
-        
-        const data = await response.json();
-        return data.response;
-    } catch (error) {
-        console.error('Błąd:', error);
-        throw error;
-    }
-}
         
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
