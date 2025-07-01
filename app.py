@@ -30,7 +30,7 @@ def api_chat():
         user_message = data.get('message', '')
         
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Jesteś pomocnym asystentem do wsparcia psychicznego. Odpowiadaj po polsku, z empatią i zrozumieniem."},
                 {"role": "user", "content": user_message}
