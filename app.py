@@ -41,7 +41,7 @@ def api_chat():
         return jsonify({"response": ai_response})
         
     except Exception as e:
-        print(f"Błąd API: {e}")  # To pokaże błąd w logach
+        print(f"Błąd API: {e}")
         return jsonify({"error": str(e)}), 500
         
         ai_response = response.choices[0].message.content
