@@ -22,22 +22,29 @@ def serve_file(filename):
         return "File not found", 404
 # Inicjalizacja klienta OpenAI
 client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-
 @app.route('/api/chat', methods=['POST'])
 def api_chat():
     try:
         data = request.get_json()
         user_message = data.get('message', '')
-        
-       r esponse = client.chat.completions.create(
-    model="gpt-4-turbo",
-           messages=[
-        {"role": "system", "content": "Jesteś pomocnym asystentem psychologicznym. Odpowiadaj empatycznie i profesjonalnie."},
-        {"role": "user", "content": message}
-    ],
-    max_tokens=1000,
-    temperature=0.7
-)
+
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "Jesteś pomocnym asystentem psychologicznym. Odpowiadaj empatycznie i profesjonalnie."},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=1000,
+            temperature=0.7
+        )
+
+        ai_response = response.choices[0].message.content
+        return jsonify({"response": ai_response})
+
+    except Exception as e:
+        app.logger.error(f"Błąd API: {e}")
+        return jsonify({"error": str(e)}), 500
+
         
         ai_response = response.choices[0].message.content
         return jsonify({"response": ai_response})

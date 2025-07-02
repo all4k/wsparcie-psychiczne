@@ -2,145 +2,30 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Czat z AI - Wsparcie Psychiczne</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .chat-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .messages {
-            height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            background: #fafafa;
-        }
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .user-message {
-            background: #007bff;
-            color: white;
-            text-align: right;
-        }
-        .ai-message {
-            background: #e9ecef;
-            color: #333;
-        }
-        .input-area {
-            display: flex;
-            gap: 10px;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        #sendButton {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #sendButton:hover {
-            background: #0056b3;
-        }
-    </style>
+    <title>Chat SOS</title>
 </head>
 <body>
-    <div class="chat-container">
-        <h1>Czat z AI - Wsparcie Psychiczne</h1>
-        <div id="messages" class="messages">
-            <div class="message ai-message">
-                Cześć! Jestem tutaj, żeby Ci pomóc. Jak się dzisiaj czujesz?
-            </div>
-        </div>
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Napisz swoją wiadomość..." onkeypress="handleKeyPress(event)">
-            <button id="sendButton" onclick="sendMessage()">Wyślij</button>
-        </div>
-    </div>
+    <h1>Wsparcie Psychiczne - SOS</h1>
+    <textarea id="userInput" rows="4" cols="50" placeholder="Napisz wiadomość..."></textarea><br>
+    <button onclick="sendMessage()">Wyślij</button>
+
+    <h3>Odpowiedź AI:</h3>
+    <div id="responseBox"></div>
 
     <script>
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const messages = document.getElementById('messages');
-            const message = input.value.trim();
-            
-            if (message === '') return;
-            
-            // Dodaj wiadomość użytkownika
-            const userDiv = document.createElement('div');
-            userDiv.className = 'message user-message';
-            userDiv.textContent = message;
-            messages.appendChild(userDiv);
-            
-            // Wyczyść input
-            input.value = '';
-            
-           // Wywołaj prawdziwe API
-getAIResponse(message).then(response => {
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'message ai-message';
-    aiDiv.textContent = response;
-    messages.appendChild(aiDiv);
-    messages.scrollTop = messages.scrollHeight;
-}).catch(error => {
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'message ai-message';
-    aiDiv.textContent = 'Przepraszam, wystąpił błąd. Spróbuj ponownie.';
-    messages.appendChild(aiDiv);
-    messages.scrollTop = messages.scrollHeight;
-});
-            
-            messages.scrollTop = messages.scrollHeight;
-        }
-        
-        async function getAIResponse(userMessage) {
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                message: userMessage
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Błąd sieci');
-        }
-        
-        const data = await response.json();
-        return data.response;
-    } catch (error) {
-        console.error('Błąd:', error);
-        throw error;
-    }
-}
-        
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+        async function sendMessage() {
+            const message = document.getElementById('userInput').value;
+
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            document.getElementById('responseBox').innerText = data.response || data.error;
         }
     </script>
 </body>
 </html>
+
