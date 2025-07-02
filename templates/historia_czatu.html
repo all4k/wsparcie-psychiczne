@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Historia Czatów</title>
+    <style>
+        body { font-family: Arial; background-color: #f0f7f4; padding: 20px; }
+        .blok { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .czas { font-size: 0.8em; color: gray; }
+        .pytanie { font-weight: bold; color: #004d40; }
+        .odpowiedz { color: #00695c; }
+    </style>
+</head>
+<body>
+    <h1>📜 Historia Czatów z AI</h1>
+    {% for wpis in wpisy %}
+    <div class="blok">
+        <div class="czas">{{ wpis.czas }}</div>
+        <div class="pytanie">Ty: {{ wpis.pytanie }}</div>
+        <div class="odpowiedz">AI: {{ wpis.odpowiedz }}</div>
+    </div>
+    {% endfor %}
+    <a href="/">← Wróć do strony głównej</a>
+</body>
+</html>
+

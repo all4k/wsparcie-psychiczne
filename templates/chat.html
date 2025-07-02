@@ -2,29 +2,94 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Chat SOS</title>
+    <title>Czat z AI – Wsparcie Psychiczne</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f2ef;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        #chat {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .user { color: #004d40; margin-bottom: 10px; }
+        .ai { color: #00695c; margin-bottom: 10px; }
+        form {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Wsparcie Psychiczne - SOS</h1>
-    <textarea id="userInput" rows="4" cols="50" placeholder="Napisz wiadomość..."></textarea><br>
-    <button onclick="sendMessage()">Wyślij</button>
+    <h1>🧠 Czat z AI – Wsparcie Psychiczne</h1>
+    <div id="chat"></div>
 
-    <h3>Odpowiedź AI:</h3>
-    <div id="responseBox"></div>
+    <form id="chatForm">
+        <input type="text" id="messageInput" placeholder="Wpisz wiadomość..." required>
+        <button type="submit">Wyślij</button>
+    </form>
 
     <script>
-        async function sendMessage() {
-            const message = document.getElementById('userInput').value;
+        const chatDiv = document.getElementById("chat");
+        const form = document.getElementById("chatForm");
+        const input = document.getElementById("messageInput");
 
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Dodaj wiadomość użytkownika do czatu
+            const userMsg = document.createElement("div");
+            userMsg.className = "user";
+            userMsg.textContent = "Ty: " + message;
+            chatDiv.appendChild(userMsg);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+
+            input.value = "";
+
+            // Wyślij wiadomość do API
+            fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: message })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const aiMsg = document.createElement("div");
+                aiMsg.className = "ai";
+                aiMsg.textContent = "AI: " + (data.response || "[Brak odpowiedzi]");
+                chatDiv.appendChild(aiMsg);
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            })
+            .catch(err => {
+                const errorMsg = document.createElement("div");
+                errorMsg.className = "ai";
+                errorMsg.textContent = "AI: Wystąpił błąd podczas komunikacji.";
+                chatDiv.appendChild(errorMsg);
             });
-
-            const data = await response.json();
-            document.getElementById('responseBox').innerText = data.response || data.error;
-        }
+        });
     </script>
 </body>
 </html>
