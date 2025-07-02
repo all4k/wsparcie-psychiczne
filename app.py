@@ -29,13 +29,15 @@ def api_chat():
         data = request.get_json()
         user_message = data.get('message', '')
         
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Jesteś pomocnym asystentem do wsparcia psychicznego. Odpowiadaj po polsku, z empatią i zrozumieniem."},
-                {"role": "user", "content": user_message}
-            ]
-        )
+       r esponse = client.chat.completions.create(
+    model="gpt-4-turbo",
+           messages=[
+        {"role": "system", "content": "Jesteś pomocnym asystentem psychologicznym. Odpowiadaj empatycznie i profesjonalnie."},
+        {"role": "user", "content": message}
+    ],
+    max_tokens=1000,
+    temperature=0.7
+)
         
         ai_response = response.choices[0].message.content
         return jsonify({"response": ai_response})
