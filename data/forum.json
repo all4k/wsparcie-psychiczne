@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "kategoria": "Bezsenność",
+    "tytul": "stres w pracy jak sobie radzicie",
+    "tresc": "złe się dziś czuje jestem zestresowany moimi podwładnymi \r\n",
+    "autor": "nick",
+    "data": "2025-07-02 18:39",
+    "ocena_ai": "wsparcie",
+    "odpowiedzi": [
+      {
+        "autor": "tick",
+        "tresc": "ja tez mam kryzys w pracy \r\n",
+        "data": "2025-07-02 18:44"
+      },
+      {
+        "autor": "lick ",
+        "tresc": "podwładni są tacy frustrujący, powybijałbym ich \r\n",
+        "data": "2025-07-02 18:45"
+      },
+      {
+        "tresc": "tez tak mam , stresują mnie \r\n",
+        "autor": "trik ",
+        "data": "2025-07-02 19:02",
+        "ukryj": false
+      },
+      {
+        "tresc": "Mam ochotę ich rozwalić albo zniszczyć wszystko",
+        "autor": "bik",
+        "data": "2025-07-02 19:02",
+        "ukryj": true
+      },
+      {
+        "tresc": "mnie nie ruszają ich fochy \r\n",
+        "autor": "trik",
+        "data": "2025-07-02 19:17",
+        "ukryj": false
+      }
+    ]
+  }
+]

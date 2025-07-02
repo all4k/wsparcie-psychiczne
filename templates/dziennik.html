@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dziennik emocji</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f8f0; }
+        .entry { background: #fff; padding: 10px; margin-bottom: 15px; border-radius: 8px; }
+        .emotion { font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Dziennik Emocji</h1>
+
+    <form method="post">
+        <input type="text" name="autor" placeholder="Twój nick" required><br><br>
+        <textarea name="tresc" placeholder="Jak się dzisiaj czujesz?" rows="4" style="width: 100%;" required></textarea><br><br>
+        <button type="submit">Zapisz wpis</button>
+    </form>
+
+    <hr>
+
+    {% for wpis in wpisy %}
+        <div class="entry">
+            <div><strong>{{ wpis.autor }}</strong> – {{ wpis.data }}</div>
+            <div class="emotion">AI: {{ wpis.emocja }}</div>
+            <p>{{ wpis.tresc }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
+
