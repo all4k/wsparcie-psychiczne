@@ -1,41 +1,70 @@
 [
   {
-    "id": 1,
-    "kategoria": "Bezsenność",
-    "tytul": "stres w pracy jak sobie radzicie",
-    "tresc": "złe się dziś czuje jestem zestresowany moimi podwładnymi \r\n",
-    "autor": "nick",
-    "data": "2025-07-02 18:39",
-    "ocena_ai": "wsparcie",
+    "tytul": "mobbing w pracy ",
+    "tresc": "strasznie mnie denerwują koledzy z pracy, za moimi plecami się podśmiewają ze mnie, co powinien zrobić, niechęć dodatkowych spiec z kolegami, i dlatego nie chce iść z tym do przełożonego",
+    "kategoria": "Inne",
+    "autor": "anna",
+    "data": "2025-07-07 20:45",
     "odpowiedzi": [
       {
-        "autor": "tick",
-        "tresc": "ja tez mam kryzys w pracy \r\n",
-        "data": "2025-07-02 18:44"
-      },
-      {
-        "autor": "lick ",
-        "tresc": "podwładni są tacy frustrujący, powybijałbym ich \r\n",
-        "data": "2025-07-02 18:45"
-      },
-      {
-        "tresc": "tez tak mam , stresują mnie \r\n",
-        "autor": "trik ",
-        "data": "2025-07-02 19:02",
+        "tresc": "luzik jutro tez jest dzień ",
+        "autor": "nick",
+        "data": "2025-07-08 19:18",
         "ukryj": false
       },
       {
-        "tresc": "Mam ochotę ich rozwalić albo zniszczyć wszystko",
-        "autor": "bik",
-        "data": "2025-07-02 19:02",
-        "ukryj": true
+        "tresc": "widzę ze się martwisz, wszystko się ułoży \r\n",
+        "autor": "nick",
+        "data": "2025-07-08 19:25",
+        "ukryj": false
       },
       {
-        "tresc": "mnie nie ruszają ich fochy \r\n",
-        "autor": "trik",
-        "data": "2025-07-02 19:17",
+        "tresc": "ja bym się chyba powiesił \r\n",
+        "autor": "nick",
+        "data": "2025-07-08 19:55",
+        "ukryj": false
+      },
+      {
+        "tresc": "Mam myśli samobójcze, nie chcę żyć.\r\n",
+        "autor": "anna",
+        "data": "2025-07-08 20:17",
+        "ukryj": true
+      }
+    ],
+    "ocena_ai": "wsparcie"
+  },
+  {
+    "tytul": "trudny poniedziałek",
+    "tresc": "ciężko mi się zac zol poniedziałek, najpierw zaspałem, a spiesząc się do pracy doprowadziłem do kolizji. Nadmiar złego od szefa dostałem reprymendy za nieskończenie projektu w piątek. Jakaś masakra ",
+    "kategoria": "Stres",
+    "autor": "anna",
+    "data": "2025-07-08 18:51",
+    "odpowiedzi": [
+      {
+        "tresc": "ale miałeś straszny start tygodnia ja bym się chyba powiesił ",
+        "autor": "nick",
+        "data": "2025-07-08 19:38",
+        "ukryj": false
+      },
+      {
+        "tresc": "nie wiem co robić, coraz częściej mam myśli samobójcze",
+        "autor": "anna",
+        "data": "2025-07-08 19:57",
+        "ukryj": false
+      },
+      {
+        "tresc": "tez tak mam, juz mie się nie chce żyć ",
+        "autor": "anna",
+        "data": "2025-07-08 20:04",
+        "ukryj": false
+      },
+      {
+        "tresc": "Czasem myślę o samobójstwie...\r\n",
+        "autor": "anna",
+        "data": "2025-07-08 20:04",
         "ukryj": false
       }
-    ]
+    ],
+    "ocena_ai": "wsparcie"
   }
 ]

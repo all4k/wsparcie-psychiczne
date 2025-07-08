@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nowy wątek – Forum Wsparcia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef6f2;
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 { color: #2e7d32; }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dodaj nowy wątek</h1>
+    <form method="POST">
+        <label for="tytul">Tytuł:</label>
+        <input type="text" id="tytul" name="tytul" required>
+
+        <label for="kategoria">Kategoria:</label>
+        <select id="kategoria" name="kategoria" required>
+            <option value="Bezsenność">Bezsenność</option>
+            <option value="Stres">Stres</option>
+            <option value="Depresja">Depresja</option>
+            <option value="Inne">Inne</option>
+        </select>
+
+        <label for="tresc">Treść:</label>
+        <textarea id="tresc" name="tresc" rows="5" required></textarea>
+
+        <button type="submit">Dodaj wątek</button>
+    </form>
+
+    <a href="/forum">← Powrót do forum</a>
+</body>
+</html>
+

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "tytul": "Stres w pracy jak sobie radzicie?",
+    "kategoria": "Bezsenno\u015b\u0107",
+    "autor": "nick",
+    "data": "2025-07-02 18:39",
+    "tresc": "\u0179le si\u0119 dzi\u015b czuj\u0119, jestem zestresowany moimi podw\u0142adnymi.",
+    "ocena_ai": "wsparcie",
+    "odpowiedzi": [
+      {
+        "autor": "tick",
+        "data": "2025-07-02 18:44",
+        "tresc": "Ja te\u017c mam kryzys w pracy."
+      },
+      {
+        "autor": "trik",
+        "data": "2025-07-02 19:02",
+        "tresc": "Te\u017c tak mam, stresuj\u0105 mnie."
+      }
+    ]
+  },
+  {
+    "tytul": "mobbing w pracy ",
+    "tresc": "strasznie mnie denerwuj\u0105 koledzy z pracy, za moimi plecami si\u0119 pod\u015bmiewaj\u0105 ze mnie, co powinien zrobi\u0107, niech\u0119\u0107 dodatkowych spiec z kolegami, i dlatego nie chce i\u015b\u0107 z tym do prze\u0142o\u017conego",
+    "kategoria": "Inne",
+    "autor": "anna",
+    "data": "2025-07-07 20:45",
+    "odpowiedzi": [],
+    "ocena_ai": "wsparcie"
+  }
+]

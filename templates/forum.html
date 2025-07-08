@@ -6,102 +6,65 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f3f8f4;
-            margin: 0 auto;
-            max-width: 800px;
+            background-color: #f2f2f2;
             padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        h1, h2 {
+        h1 {
             color: #2e7d32;
         }
         .post {
-            background: #ffffff;
+            background: white;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin: 10px 0;
+            border-left: 5px solid #2e7d32;
+            border-radius: 5px;
         }
         .meta {
-            color: #777;
+            color: #666;
             font-size: 0.9em;
             margin-bottom: 8px;
         }
-        .form-group {
-            margin-bottom: 10px;
+        a {
+            color: #2e7d32;
+            text-decoration: none;
         }
-        textarea, input, select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        button {
+        .nowy-przycisk {
+            margin-top: 20px;
+            display: inline-block;
             padding: 10px 20px;
             background-color: #2e7d32;
             color: white;
-            border: none;
             border-radius: 5px;
-        }
-        .ocena {
-            font-size: 0.85em;
-            color: #388e3c;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <h1>Forum Wsparcia</h1>
-    <div class="stats" style="background: #eef5ee; padding: 10px; border-radius: 8px; margin-bottom: 20px;">
-        <strong>📊 Statystyki forum:</strong><br>
-        Liczba wątków: {{ total_posts }}<br>
-        🚨 Wątki kryzysowe: {{ kryzys_count }}<br>
-        🤝 Wątki wspierające: {{ wsparcie_count }}<br>
-        ⚠️ Ukryte odpowiedzi: {{ ukryte_odp }}
-    </div>
 
     {% for post in posts %}
     <div class="post">
         <div class="meta">
-            <strong>{{ post.tytul }}</strong> ({{ post.kategoria }})<br>
-            {{ post.autor }} – {{ post.data }}<br>
-            {% if post.ocena_ai == 'kryzys' %}
-            <span class="ocena" style="color: red;">🚨 Kryzys</span>
-            {% elif post.ocena_ai == 'wsparcie' %}
-            <span class="ocena" style="color: green;">🤝 Wsparcie</span>
-            {% elif post.ocena_ai == 'neutralny' %}
-            <span class="ocena" style="color: gray;">⚪ Neutralny</span>
-            {% else %}
-            <span class="ocena" style="color: gray;">❔ Nieokreślony</span>
-            {% endif %}
+    <strong>{{ post.tytul }}</strong> ({{ post.kategoria }})<br>
+    {{ post.autor }} – {{ post.data }}<br>
+    Liczba odpowiedzi: {{ post.odpowiedzi | length }}<br>
+    {% if post.ocena_ai == "pilne" %}
+        <span style="color: red;">🔴 Pilne</span>
+    {% elif post.ocena_ai == "wsparcie" %}
+        <span style="color: orange;">🟡 Wsparcie</span>
+    {% else %}
+        <span style="color: green;">🟢 Neutralne</span>
+    {% endif %}
+</div>
 
-        </div>
         <p>{{ post.tresc[:180] }}...</p>
-        <a href="/forum/{{ post.id }}">Zobacz wątek</a>
+        <a href="/forum/{{ loop.index0 }}">Zobacz wątek</a>
     </div>
     {% endfor %}
 
-    <h2>Dodaj nowy wątek</h2>
-    <form method="POST" action="/forum/dodaj">
-        <div class="form-group">
-            <input name="tytul" placeholder="Tytuł wątku" required>
-        </div>
-        <div class="form-group">
-            <textarea name="tresc" placeholder="Co chciałbyś powiedzieć?" rows="4" required></textarea>
-        </div>
-        <div class="form-group">
-            <input name="autor" placeholder="Twój pseudonim (opcjonalnie)">
-        </div>
-        <div class="form-group">
-            <select name="kategoria" required>
-                <option value="">Wybierz kategorię</option>
-                <option>Lęk</option>
-                <option>Samotność</option>
-                <option>Złość</option>
-                <option>Bezsenność</option>
-                <option>Inne</option>
-            </select>
-        </div>
-        <button type="submit">Dodaj wątek</button>
-    </form>
+    <a class="nowy-przycisk" href="/forum/dodaj">➕ Dodaj nowy wątek</a>
 </body>
 </html>
 

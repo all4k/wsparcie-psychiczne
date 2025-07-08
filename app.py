@@ -1,4 +1,7 @@
+
 from flask import Flask, render_template, request, jsonify, redirect
+from functools import wraps
+from flask import session, redirect, url_for
 import os
 import json
 from datetime import datetime
@@ -6,8 +9,28 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import random
 from openai import OpenAI
-
 app = Flask(__name__)
+app.secret_key = 'tajny_klucz_123'  # ważne: zmień na bezpieczny
+
+def czy_ukryc_tresc(tresc):
+    tresc_niska = tresc.lower()
+    niepokojace_slowa = [
+        "powiesić", "zabić się", "koniec ze mną", "nie chce żyć", "samobójstwo", "mam dość życia"
+    ]
+    return any(slowo in tresc_niska for slowo in niepokojace_slowa)
+
+USERS_FILE = "data/uzytkownicy.json"
+FORUM_FILE = "data/forum.json"  # ← TUTAJ
+HISTORIA_CZATU_PATH = "data/historia_czatu.json"
+
+# Dekorator: wymaga zalogowania
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Inicjalizacja klienta OpenAI
 client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
@@ -33,14 +56,18 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/chat')
+@app.route("/chat")
+@login_required
 def chat():
-    return render_template('chat.html')
+    return render_template("chat.html")
 
 
-@app.route('/cwiczenie-oddechowe')
-def cwiczenie():
-    return render_template('cwiczenie-oddechowe.html')
+
+@app.route("/cwiczenie-oddechowe")
+@login_required
+def cwiczenie_oddechowe():
+    return render_template("cwiczenie-oddechowe.html")
+
 
 
 @app.route('/historia')
@@ -108,6 +135,167 @@ def api_chat():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+from flask import session, redirect, url_for, flash
+
+app.secret_key = 'tajny_klucz_123'  # ważne: zmień na bezpieczny
+
+# Plik z użytkownikami
+USERS_FILE = "data/uzytkownicy.json"
+
+@app.route("/forum")
+@login_required
+def forum():
+    try:
+        with open(FORUM_FILE, "r") as f:
+            posts = json.load(f)
+    except FileNotFoundError:
+        posts = []
+    return render_template("forum.html", posts=posts[::-1])
+@app.route("/forum/<int:watek_id>")
+@login_required
+def watek(watek_id):
+    with open(FORUM_FILE, "r") as f:
+        wątki = json.load(f)
+    
+    if watek_id < 0 or watek_id >= len(wątki):
+        return "Nie znaleziono wątku", 404
+
+    watek = wątki[watek_id]
+    return render_template("watek.html", watek=watek, watek_id=watek_id)
+def ocen_watek_ai(tytul, tresc):
+    prompt = f"Przeanalizuj następujący wpis na forum:\nTytuł: {tytul}\nTreść: {tresc}\n\nJaka to kategoria emocjonalna? Wybierz jedno słowo: pilne, wsparcie, neutralne."
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Jesteś pomocnym asystentem wsparcia psychicznego."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+        )
+        wynik = response.choices[0].message.content.strip().lower()
+        if wynik in ["pilne", "wsparcie", "neutralne"]:
+            return wynik
+        return "neutralne"
+    except Exception as e:
+        print("Błąd analizy AI:", e)
+        return "neutralne"
+
+
+@app.route("/forum/dodaj", methods=["GET", "POST"])
+@login_required
+def dodaj_watek():
+    if request.method == "POST":
+        tytul = request.form["tytul"]
+        tresc = request.form["tresc"]
+        kategoria = request.form["kategoria"]
+        autor = session.get("user", "anonim")
+        data = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        nowy_watek = {
+            "tytul": tytul,
+            "tresc": tresc,
+            "kategoria": kategoria,
+            "autor": autor,
+            "data": data,
+            "odpowiedzi": [],
+            "ocena_ai": ocen_watek_ai(tytul, tresc)
+
+        }
+
+        with open(FORUM_FILE, "r") as f:
+            wątki = json.load(f)
+        wątki.append(nowy_watek)
+
+        with open(FORUM_FILE, "w") as f:
+            json.dump(wątki, f, indent=2)
+
+        return redirect("/forum")
+    
+    return render_template("dodaj_watek.html")
+
+@app.route("/forum/<int:watek_id>/dodaj", methods=["POST"])
+@login_required
+def dodaj_odpowiedz(watek_id):
+    tresc = request.form["tresc"]
+    autor = session.get("user", "anonim")
+    data = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    # Słowa-klucze, które powodują ukrycie odpowiedzi
+    niepokojace_slowa = [
+        "samobójstwo", "samobójcze", "zabiję", "zabiłbym", "powiesić się", 
+        "nie chcę żyć", "chciałbym umrzeć", "skończyć ze sobą"
+    ]
+
+    # Filtr treści
+    ukryj = any(slowo in tresc.lower() for slowo in niepokojace_slowa)
+
+    with open(FORUM_FILE, "r") as f:
+        watki = json.load(f)
+
+    if watek_id < 0 or watek_id >= len(watki):
+        return "Nie znaleziono wątku", 404
+
+    odpowiedz = {
+        "tresc": tresc,
+        "autor": autor,
+        "data": data,
+        "ukryj": ukryj
+    }
+
+    watki[watek_id]["odpowiedzi"].append(odpowiedz)
+
+    with open(FORUM_FILE, "w") as f:
+        json.dump(watki, f, indent=2, ensure_ascii=False)
+
+    return redirect(f"/forum/{watek_id}")
+
+# Rejestracja
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        login = request.form["login"]
+        haslo = request.form["haslo"]
+        try:
+            with open(USERS_FILE, "r") as f:
+                users = json.load(f)
+        except FileNotFoundError:
+            users = {}
+
+        if login in users:
+            return "Użytkownik już istnieje"
+        users[login] = {"haslo": haslo}
+        with open(USERS_FILE, "w") as f:
+            json.dump(users, f)
+        return redirect("/login")
+    return render_template("register.html")
+
+# Logowanie
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        login = request.form.get("login")
+        haslo = request.form.get("haslo")
+
+        try:
+            with open(USERS_FILE, "r") as f:
+                users = json.load(f)
+        except FileNotFoundError:
+            users = {}
+
+        if login in users and users[login]["haslo"] == haslo:
+            session["user"] = login
+            return redirect("/")
+        else:
+            return "Nieprawidłowe dane logowania"
+    return render_template("login.html")
+
+# Wylogowanie
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect("/")
 
 
 if __name__ == '__main__':

@@ -2,71 +2,69 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>{{ post.tytul }} – Forum Wsparcia</title>
+    <title>{{ watek.tytul }} – Forum Wsparcia</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f3f8f4;
-            margin: 0 auto;
             max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
         }
-        h1, h2 { color: #2e7d32; }
-        .meta { color: #777; font-size: 0.9em; margin-bottom: 8px; }
         .reply {
-            background: #fff;
+            background-color: white;
             padding: 10px;
-            border-left: 4px solid #2e7d32;
             margin: 10px 0;
-            border-radius: 5px;
+            border-left: 4px solid #2e7d32;
+            border-radius: 4px;
         }
-        textarea, input {
+        .meta {
+            color: #555;
+            font-size: 0.9em;
+            margin-bottom: 6px;
+        }
+        textarea {
             width: 100%;
             padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+            margin-top: 8px;
         }
         button {
             padding: 10px 20px;
+            margin-top: 10px;
             background-color: #2e7d32;
             color: white;
             border: none;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>{{ post.tytul }}</h1>
-    <div class="meta">{{ post.kategoria }} | {{ post.autor }} – {{ post.data }}</div>
-    <p>{{ post.tresc }}</p>
+    <h1>{{ watek.tytul }}</h1>
+    <div class="meta">{{ watek.kategoria }} | {{ watek.autor }} – {{ watek.data }}</div>
+    <p>{{ watek.tresc }}</p>
 
     <h2>Odpowiedzi</h2>
-    {% for odpowiedz in post.odpowiedzi %}
-  <div class="reply">
-    <div class="meta">{{ odpowiedz.autor }} – {{ odpowiedz.data }}</div>
-
-    {% if odpowiedz.ukryj %}
-      <details>
-        <summary style="color: red;">⚠️ Ta odpowiedź może zawierać niepokojące treści – kliknij, aby wyświetlić</summary>
-        <p>{{ odpowiedz.tresc }}</p>
-      </details>
-    {% else %}
-      <p>{{ odpowiedz.tresc }}</p>
-    {% endif %}
-  </div>
-{% endfor %}
-
+    {% for odpowiedz in watek.odpowiedzi %}
+        <div class="reply">
+            <div class="meta">{{ odpowiedz.autor }} – {{ odpowiedz.data }}</div>
+            {% if odpowiedz.ukryj %}
+                <details>
+                    <summary style="color: red;">⚠️ Ta odpowiedź może zawierać niepokojące treści – kliknij, aby wyświetlić</summary>
+                    <p>{{ odpowiedz.tresc }}</p>
+                </details>
+            {% else %}
+                <p>{{ odpowiedz.tresc }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
 
     <h3>Dodaj odpowiedź</h3>
-    <form method="POST" action="/forum/{{ post.id }}/odpowiedz">
-        <input name="autor" placeholder="Twój pseudonim (opcjonalnie)">
-        <textarea name="tresc" placeholder="Napisz swoją odpowiedź..." rows="3" required></textarea>
+    <form method="POST" action="/forum/{{ watek_id }}/dodaj">
+        <textarea name="tresc" rows="4" placeholder="Twoja odpowiedź..."></textarea>
         <button type="submit">Dodaj odpowiedź</button>
     </form>
 
-    <br><a href="/forum">← Powrót do forum</a>
+    <p><a href="/forum">← Powrót do forum</a></p>
 </body>
 </html>
 
