@@ -59,8 +59,44 @@ def index():
 @app.route("/chat")
 @login_required
 def chat():
-    return render_template("chat.html")
+    HISTORIA_PLIK = "data/chat_historia.json"
+    try:
+        with open(HISTORIA_PLIK, "r") as f:
+            historia = json.load(f)
+    except FileNotFoundError:
+        historia = []
+    return render_template("chat.html", historia=historia)
 
+    if request.method == "POST":
+        wiadomosc = request.json.get("wiadomosc")
+        autor = session.get("user", "anonim")
+        data = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        historia.append({"autor": autor, "data": data, "wiadomosc": wiadomosc})
+
+        # Odpowiedź AI
+        try:
+            odpowiedz = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "Jesteś empatycznym terapeutą."},
+                    {"role": "user", "content": wiadomosc}
+                ]
+            )
+            odpowiedz_ai = odpowiedz.choices[0].message.content.strip()
+
+        except Exception as e:
+            odpowiedz_ai = "Przepraszam, wystąpił problem z odpowiedzią AI."
+
+        historia.append({"autor": "AI", "data": data, "wiadomosc": odpowiedz_ai})
+
+        with open(HISTORIA_PLIK, "w") as f:
+            json.dump(historia, f, indent=2, ensure_ascii=False)
+
+        return redirect("/chat")
+
+    # Zwróć historię do szablonu przy GET
+    return render_template("chat.html", historia=historia)
 
 
 @app.route("/cwiczenie-oddechowe")
@@ -296,6 +332,36 @@ def login():
 def logout():
     session.pop("user", None)
     return redirect("/")
+
+@app.route("/dziennik", methods=["GET", "POST"])
+@login_required
+def dziennik():
+    if request.method == "POST":
+        emocje = request.form.get("emocje")
+        tresc = request.form.get("tresc")
+        data = datetime.now().strftime("%Y-%m-%d %H:%M")
+        wpis = {"data": data, "emocje": emocje, "tresc": tresc}
+
+        try:
+            with open("data/dziennik.json", "r") as f:
+                wpisy = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            wpisy = []
+
+        wpisy.append(wpis)
+
+        with open("data/dziennik.json", "w") as f:
+            json.dump(wpisy, f, indent=2, ensure_ascii=False)
+
+        return redirect("/dziennik")
+
+    try:
+        with open("data/dziennik.json", "r") as f:
+            wpisy = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        wpisy = []
+
+    return render_template("dziennik.html", wpisy=wpisy)
 
 
 if __name__ == '__main__':

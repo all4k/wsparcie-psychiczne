@@ -1,32 +1,43 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Dziennik emocji</title>
-    <style>
-        body { font-family: Arial; padding: 20px; background: #f0f8f0; }
-        .entry { background: #fff; padding: 10px; margin-bottom: 15px; border-radius: 8px; }
-        .emotion { font-weight: bold; color: green; }
-    </style>
-</head>
-<body>
-    <h1>Dziennik Emocji</h1>
+{% extends "layout.html" %}
+{% block title %}Dziennik Emocji{% endblock %}
+{% block content %}
 
-    <form method="post">
-        <input type="text" name="autor" placeholder="Twój nick" required><br><br>
-        <textarea name="tresc" placeholder="Jak się dzisiaj czujesz?" rows="4" style="width: 100%;" required></textarea><br><br>
-        <button type="submit">Zapisz wpis</button>
-    </form>
+<h1>📔 Twój Dziennik Emocji</h1>
 
-    <hr>
+<form method="POST" action="/dziennik" style="margin-bottom: 30px;">
+    <label for="emocja">Jak się dziś czujesz?</label><br>
+    <select name="emocja" required>
+        <option value="">-- Wybierz emocję --</option>
+        <option value="radość">😊 Radość</option>
+        <option value="smutek">😢 Smutek</option>
+        <option value="złość">😠 Złość</option>
+        <option value="strach">😨 Strach</option>
+        <option value="spokój">😌 Spokój</option>
+        <option value="inne">🤔 Inne</option>
+    </select><br><br>
 
-    {% for wpis in wpisy %}
-        <div class="entry">
-            <div><strong>{{ wpis.autor }}</strong> – {{ wpis.data }}</div>
-            <div class="emotion">AI: {{ wpis.emocja }}</div>
-            <p>{{ wpis.tresc }}</p>
-        </div>
-    {% endfor %}
-</body>
-</html>
+    <label for="notatka">Chcesz coś dodać?</label><br>
+    <textarea name="notatka" rows="3" placeholder="Zapisz swoje myśli..." style="width: 100%; padding: 10px;"></textarea><br>
+
+    <button type="submit">Zapisz wpis</button>
+</form>
+
+{% if wpisy %}
+    <h2>🕒 Twoje wcześniejsze wpisy</h2>
+    <ul style="list-style-type: none; padding: 0;">
+        {% for wpis in wpisy %}
+            <li style="background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-left: 5px solid #90caf9;">
+                <strong>{{ wpis.data }}</strong><br>
+                <span>Emocja: <strong>{{ wpis.emocja }}</strong></span><br>
+                {% if wpis.notatka %}
+                    <div style="margin-top: 5px;"><em>Notatka:</em> {{ wpis.notatka }}</div>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak zapisanych emocji. Zacznij od dodania wpisu powyżej.</p>
+{% endif %}
+
+{% endblock %}
 

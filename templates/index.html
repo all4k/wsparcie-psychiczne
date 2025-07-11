@@ -1,23 +1,16 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Wsparcie Psychiczne</title>
-</head>
-<body>
-    {% if session.get("user") %}
-        <p>👋 Witaj, {{ session["user"] }}! <a href="/logout">[Wyloguj]</a></p>
-    {% else %}
-        <p><a href="/login">Zaloguj się</a> lub <a href="/register">Zarejestruj się</a></p>
-    {% endif %}
+{% extends "layout.html" %}
 
-    <h1>Witaj w aplikacji Wsparcie Psychiczne!</h1>
-    <p>Wybierz jedną z poniższych sekcji:</p>
-    <ul>
-        <li><a href="/chat">💬 Czat z AI</a></li>
-        <li><a href="/forum">🧑‍🤝‍🧑 Forum Wsparcia</a></li>
-        <li><a href="/dziennik">📔 Dziennik Emocji</a></li>
-        <li><a href="/cwiczenie-oddechowe">🧘‍♂️ Ćwiczenie Oddechowe</a></li>
-    </ul>
-</body>
-</html>
+{% block title %}Strona Główna{% endblock %}
+
+{% block content %}
+<h1>Witaj w aplikacji Wsparcie Psychiczne!</h1>
+<p>Wybierz jedną z poniższych sekcji:</p>
+
+<ul style="list-style: none; padding: 0;">
+    <li><a href="/chat">💬 Czat z AI</a></li>
+    <li><a href="/forum">🧑‍🤝‍🧑 Forum Wsparcia</a></li>
+    <li><a href="/dziennik">📔 Dziennik Emocji</a></li>
+    <li><a href="/cwiczenie-oddechowe">🧘‍♂️ Ćwiczenie Oddechowe</a></li>
+</ul>
+{% endblock %}
+

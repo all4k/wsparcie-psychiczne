@@ -1,26 +1,7 @@
 [
   {
-    "autor": "nick",
-    "data": "2025-07-02 19:27",
-    "tresc": "czuje się dziś przytłoczony i smutny ",
-    "emocja": "smutek"
-  },
-  {
-    "autor": "nick",
-    "data": "2025-07-02 19:40",
-    "tresc": "trochę lepiej , ale nadal jest mi smutno ",
-    "emocja": "smutek"
-  },
-  {
-    "autor": "nick",
-    "data": "2025-07-02 19:41",
-    "tresc": "dziś czuje się dobrze, głową przestała mnie bolec",
-    "emocja": "radość"
-  },
-  {
-    "autor": "nick",
-    "data": "2025-07-02 19:41",
-    "tresc": "to jest straszny dzień, najchętniej bym się położył i obudził się za tydzień",
-    "emocja": "przygnębienie"
+    "data": "2025-07-08 20:59",
+    "emocje": null,
+    "tresc": null
   }
 ]

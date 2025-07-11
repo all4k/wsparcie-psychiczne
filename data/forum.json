@@ -29,6 +29,12 @@
         "autor": "anna",
         "data": "2025-07-08 20:17",
         "ukryj": true
+      },
+      {
+        "tresc": "masakra jakaś\r\n",
+        "autor": "anna",
+        "data": "2025-07-08 20:58",
+        "ukryj": false
       }
     ],
     "ocena_ai": "wsparcie"
