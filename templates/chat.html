@@ -140,90 +140,16 @@
 </style>
 
 <script>
-  const form = document.getElementById("chat-form");
-  const textarea = document.getElementById("wiadomosc");
-  const chatContainer = document.getElementById("chat-container");
-
-  function scrollToBottom() {
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  }
-
-  // Enter = wyślij
-  textarea.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      form.dispatchEvent(new Event("submit"));
-    }
-  });
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const userMessage = textarea.value.trim();
-    if (!userMessage) return;
-
-    const userRow = document.createElement("div");
-    userRow.className = "message-row user";
-    const userBubble = document.createElement("div");
-    userBubble.className = "message user-message";
-    userBubble.textContent = userMessage;
-    userRow.appendChild(userBubble);
-    chatContainer.appendChild(userRow);
-    setTimeout(scrollToBottom, 100);
-
-    textarea.value = "";
-
-    fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: userMessage })
-    })
-    .then(res => res.json())
-      const botRow = document.createElement("div");
-  botRow.className = "message-row bot";
-  const botBubble = document.createElement("div");
-  botBubble.className = "message bot-message";
-  botBubble.textContent = data.response;
-  botRow.appendChild(botBubble);
-  chatContainer.appendChild(botRow);
-  scrollToBottom();
-})
-.then(data => {
-  const botRow = document.createElement("div");
-  botRow.className = "message-row bot";
-  const botBubble = document.createElement("div");
-  botBubble.className = "message bot-message";
-  botBubble.textContent = "";
-  botRow.appendChild(botBubble);
-  chatContainer.appendChild(botRow);
-  scrollToBottom();
-
-  let i = 0;
-  function typeWriter() {
-    if (i < data.response.length) {
-      botBubble.textContent += data.response.charAt(i);
-      i++;
-      scrollToBottom();
-      setTimeout(typeWriter, 15); // ← Tu ustawiasz szybkość pisania
-    }
-  }
-  typeWriter();
-})
-    .catch(() => {
-      const errorRow = document.createElement("div");
-      errorRow.className = "message-row bot";
-      const errorBubble = document.createElement("div");
-      errorBubble.className = "message bot-message";
-      errorBubble.textContent = "Wystąpił błąd przy łączeniu z serwerem.";
-      errorRow.appendChild(errorBubble);
-      chatContainer.appendChild(errorRow);
-      setTimeout(scrollToBottom, 100);
-    });
-  });
-
-  // Obsługa emoji
   document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("chat-form");
+    const textarea = document.getElementById("wiadomosc");
+    const chatContainer = document.getElementById("chat-container");
+
+    function scrollToBottom() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Obsługa emoji
     const emojiBar = document.getElementById("emoji-bar");
     if (emojiBar) {
       emojiBar.addEventListener("click", function (e) {
@@ -233,9 +159,74 @@
         }
       });
     }
-  });
 
-  window.addEventListener("load", scrollToBottom);
+    // Enter = wyślij
+    textarea.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event("submit"));
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const userMessage = textarea.value.trim();
+      if (!userMessage) return;
+
+      const userRow = document.createElement("div");
+      userRow.className = "message-row user";
+      const userBubble = document.createElement("div");
+      userBubble.className = "message user-message";
+      userBubble.textContent = userMessage;
+      userRow.appendChild(userBubble);
+      chatContainer.appendChild(userRow);
+      scrollToBottom();
+
+      textarea.value = "";
+
+      fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userMessage })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const botRow = document.createElement("div");
+        botRow.className = "message-row bot";
+        const botBubble = document.createElement("div");
+        botBubble.className = "message bot-message";
+        botBubble.textContent = "";
+        botRow.appendChild(botBubble);
+        chatContainer.appendChild(botRow);
+        scrollToBottom();
+
+        let i = 0;
+        function typeWriter() {
+          if (i < data.response.length) {
+            botBubble.textContent += data.response.charAt(i);
+            i++;
+            scrollToBottom();
+            setTimeout(typeWriter, 15);
+          }
+        }
+        typeWriter();
+      })
+      .catch(() => {
+        const errorRow = document.createElement("div");
+        errorRow.className = "message-row bot";
+        const errorBubble = document.createElement("div");
+        errorBubble.className = "message bot-message";
+        errorBubble.textContent = "Wystąpił błąd przy łączeniu z serwerem.";
+        errorRow.appendChild(errorBubble);
+        chatContainer.appendChild(errorRow);
+        scrollToBottom();
+      });
+    });
+
+    scrollToBottom();
+  });
 </script>
 
 {% endblock %}

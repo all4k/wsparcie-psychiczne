@@ -1,16 +1,17 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, Response
+from openai import OpenAI
+import openai
 import os
 import json
-import random
-import traceback
 from datetime import datetime
 from functools import wraps
-from openai import OpenAI
+import traceback
+import random
+import time
 
 app = Flask(__name__)
-app.secret_key = 'tajny_klucz_123'  # zmień na coś bezpiecznego w produkcji
+app.secret_key = 'tajny_klucz_123'  # zmień na bezpieczny
 
-# OpenAI client (zgodny z openai>=1.0.0)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 CRISIS_KEYWORDS = [
@@ -44,50 +45,43 @@ def chat():
 
 @app.route("/api/chat", methods=["POST"])
 def api_chat():
-    try:
-        data = request.get_json()
-        message = data.get("message", "")
-        is_crisis = any(keyword in message.lower() for keyword in CRISIS_KEYWORDS)
+    data = request.get_json()
+    message = data.get("message", "")
 
-        if is_crisis:
-            selected_technique = random.choice(DBT_TECHNIQUES)
-            system_prompt = (
-                "Jesteś empatycznym psychologiem. "
-                "Użytkownik może być w kryzysie. "
-                "Zaoferuj wsparcie i zachęć do kontaktu z profesjonalistą.\n\n"
-                f"Technika DBT: {selected_technique}"
-            )
-        else:
-            system_prompt = "Jesteś wspierającym asystentem psychologicznym."
+    if "historia" not in session:
+        session["historia"] = []
 
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message}
-            ],
-            max_tokens=1500,
-            temperature=0.7
-        )
+    historia = session["historia"]
 
-        ai_response = response.choices[0].message.content.strip()
+    system_prompt = "Jesteś wspierającym asystentem psychologicznym."
 
-        # Zapisz do sesji
-        if "historia" not in session:
-            session["historia"] = []
+    def generate():
+        yield '{"response":"'
+        try:
+            for chunk in client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": message}
+                ],
+                stream=True
+            ):
+                content = chunk.choices[0].delta.content or ""
+                yield content
+        except Exception as e:
+            print("Błąd w generate:", e)
+        yield '"}'
 
-        session["historia"].append({
-            "czas": datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "user": message,
-            "ai": ai_response
-        })
+    # Zapisz do historii (tutaj, gdzie jest jeszcze dostęp do session)
+    historia.append({
+        "czas": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "user": message,
+        "ai": "(strumieniowana odpowiedź)"
+    })
+    session["historia"] = historia
 
-        return jsonify({"response": ai_response})
+    return Response(generate(), content_type="application/json")
 
-    except Exception as e:
-        print("BŁĄD W CZACIE:")
-        traceback.print_exc()
-        return jsonify({"error": "Wystąpił błąd na serwerze."}), 500
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
