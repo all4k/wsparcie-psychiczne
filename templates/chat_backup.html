@@ -168,7 +168,7 @@
     userBubble.textContent = userMessage;
     userRow.appendChild(userBubble);
     chatContainer.appendChild(userRow);
-    setTimeout(scrollToBottom, 100);
+    scrollToBottom();
 
     textarea.value = "";
 
@@ -180,36 +180,16 @@
       body: JSON.stringify({ message: userMessage })
     })
     .then(res => res.json())
+    .then(data => {
       const botRow = document.createElement("div");
-  botRow.className = "message-row bot";
-  const botBubble = document.createElement("div");
-  botBubble.className = "message bot-message";
-  botBubble.textContent = data.response;
-  botRow.appendChild(botBubble);
-  chatContainer.appendChild(botRow);
-  scrollToBottom();
-})
-.then(data => {
-  const botRow = document.createElement("div");
-  botRow.className = "message-row bot";
-  const botBubble = document.createElement("div");
-  botBubble.className = "message bot-message";
-  botBubble.textContent = "";
-  botRow.appendChild(botBubble);
-  chatContainer.appendChild(botRow);
-  scrollToBottom();
-
-  let i = 0;
-  function typeWriter() {
-    if (i < data.response.length) {
-      botBubble.textContent += data.response.charAt(i);
-      i++;
+      botRow.className = "message-row bot";
+      const botBubble = document.createElement("div");
+      botBubble.className = "message bot-message";
+      botBubble.textContent = data.response;
+      botRow.appendChild(botBubble);
+      chatContainer.appendChild(botRow);
       scrollToBottom();
-      setTimeout(typeWriter, 15); // ← Tu ustawiasz szybkość pisania
-    }
-  }
-  typeWriter();
-})
+    })
     .catch(() => {
       const errorRow = document.createElement("div");
       errorRow.className = "message-row bot";
@@ -218,7 +198,7 @@
       errorBubble.textContent = "Wystąpił błąd przy łączeniu z serwerem.";
       errorRow.appendChild(errorBubble);
       chatContainer.appendChild(errorRow);
-      setTimeout(scrollToBottom, 100);
+      scrollToBottom();
     });
   });
 
