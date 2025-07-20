@@ -1,0 +1,3 @@
+qććjakubwasik@MacBook-Air-Jakub wsparcie-psychiczne % nano pip freeze > requirements.txt
+
+pip3 freeze > requirements.
