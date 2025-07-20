@@ -1,0 +1,11 @@
+# Ignorowane pliki i foldery
+__pycache__/
+*.pyc
+.env
+*.sqlite3
+instance/
+.flask_session/
+flask_session/
+*.log
+.DS_Store
+
