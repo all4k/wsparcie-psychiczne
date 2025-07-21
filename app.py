@@ -12,6 +12,8 @@ import random
 import time
 
 app = Flask(__name__)
+app.jinja_env.cache = {}
+
 app.secret_key = 'tajny_klucz_123'  # zmień na bezpieczny
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
