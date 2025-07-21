@@ -14,26 +14,31 @@
             flex-direction: column;
             min-height: 100vh;
         }
+
         header {
             background-color: #4caf50;
             color: white;
             padding: 15px;
             text-align: center;
         }
+
         nav {
             background-color: #388e3c;
             padding: 10px;
             text-align: center;
         }
+
         nav a {
             color: white;
             text-decoration: none;
             margin: 0 15px;
             font-weight: bold;
         }
+
         nav a:hover {
             text-decoration: underline;
         }
+
         main {
             padding: 20px;
             max-width: 900px;
@@ -41,6 +46,7 @@
             background-color: white;
             flex: 1;
         }
+
         footer {
             background-color: #4caf50;
             color: white;
@@ -54,6 +60,7 @@
     <header>
         <h1>🧠 Wsparcie Psychiczne</h1>
     </header>
+
     <nav>
         <a href="/">🏠 Strona Główna</a>
         <a href="/chat">💬 Czat</a>
@@ -68,9 +75,11 @@
             <a href="/register">📝 Rejestracja</a>
         {% endif %}
     </nav>
+
     <main>
         {% block content %}{% endblock %}
     </main>
+
     <footer>
         &copy; 2025 Wsparcie Psychiczne
     </footer>
