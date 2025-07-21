@@ -203,16 +203,18 @@
         scrollToBottom();
 
         let i = 0;
-        function typeWriter() {
-          if (i < data.response.length) {
-            botBubble.textContent += data.response.charAt(i);
-            i++;
-            scrollToBottom();
-            setTimeout(typeWriter, 15);
-          }
-        }
-        typeWriter();
-      })
+       function typeWriter() {
+         if (i < data.response.length) {
+         botBubble.textContent += data.response.charAt(i);
+         i++;
+         scrollToBottom();
+         setTimeout(typeWriter, 15);
+      } else {
+         setTimeout(scrollToBottom, 100); // ← przewiń jeszcze raz po zakończeniu
+      }
+    }
+
+
       .catch(() => {
         const errorRow = document.createElement("div");
         errorRow.className = "message-row bot";
@@ -230,4 +232,5 @@
 </script>
 
 {% endblock %}
+
 
