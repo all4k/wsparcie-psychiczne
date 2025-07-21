@@ -4,72 +4,47 @@
 
 <h1>🧠 Czat z Wirtualnym Terapeutą</h1>
 
-<div id="chat-container">
+<div id="chat-container" role="log" aria-live="polite" aria-label="Historia konwersacji">
   {% for wpis in historia %}
     {% if wpis.autor == "AI" %}
-      <div class="message-row bot">
+      <div class="message-row bot" role="listitem">
         <div class="message bot-message">{{ wpis.wiadomosc }}</div>
       </div>
     {% else %}
-      <div class="message-row user">
+      <div class="message-row user" role="listitem">
         <div class="message user-message">{{ wpis.wiadomosc }}</div>
       </div>
     {% endif %}
   {% endfor %}
 </div>
 
-<!-- Pasek emoji -->
-<div id="emoji-bar">
-  <span>😀</span>
-  <span>😢</span>
-  <span>😡</span>
-  <span>❤️</span>
-  <span>🙌</span>
-  <span>🤔</span>
-  <span>🔥</span>
-  <span>💤</span>
-  <span>😞</span>
+<div id="emoji-bar" role="toolbar" aria-label="Emoji">
+  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span>
+  <span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🙌">🙌</span><span role="button" aria-label="🤔">🤔</span>
+  <span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span><span role="button" aria-label="😞">😞</span>
 </div>
 
-<form id="chat-form">
-  <button type="button" id="emoji-toggle">😊</button>
+<form id="chat-form" autocomplete="off" role="form" aria-label="Wiadomość">
+  <button type="button" id="emoji-toggle" aria-label="Wybierz emoji">😊</button>
   <textarea id="wiadomosc" name="wiadomosc" rows="1" placeholder="Napisz wiadomość..." required></textarea>
   <button type="submit">Wyślij</button>
 </form>
 
 <style>
-  body {
-    margin: 0;
-    background: #f7f8fa;
-  }
-
-  main {
-    padding-bottom: 110px;
-  }
+  main { padding-bottom: 110px; }
 
   #chat-container {
     max-height: 70vh;
     overflow-y: auto;
     padding: 10px;
-    margin-bottom: 0;
     width: 100%;
     max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
   }
 
-  .message-row {
-    display: flex;
-    margin: 6px 0;
-  }
-
-  .message-row.user {
-    justify-content: flex-end;
-  }
-
-  .message-row.bot {
-    justify-content: flex-start;
-  }
+  .message-row { display: flex; margin: 6px 0; }
+  .message-row.user { justify-content: flex-end; }
+  .message-row.bot { justify-content: flex-start; }
 
   .message {
     padding: 10px 14px;
@@ -78,57 +53,40 @@
     word-wrap: break-word;
     font-size: 15px;
     color: #000;
-    background-color: #e6f3ff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
-  .user-message {
-    background-color: #dcf8c6;
-    text-align: right;
-  }
-
-  .bot-message {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
+  .user-message { background-color: #dcf8c6; text-align: right; }
+  .bot-message { background-color: #fff; border: 1px solid #ddd; text-align: left; }
 
   #emoji-bar {
     display: none;
     position: fixed;
-    bottom: 60px;
-    left: 0;
-    right: 0;
+    left: 0; right: 0; bottom: 65px;
     justify-content: center;
     gap: 10px;
     padding: 8px;
     font-size: 24px;
-    background-color: #f9f9f9;
+    background: #f9f9f9;
     border-top: 1px solid #ddd;
     flex-wrap: wrap;
-    z-index: 9;
+    max-height: 40vh;
+    overflow-y: auto;
+    z-index: 20;
   }
 
-  #emoji-bar span {
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
-
-  #emoji-bar span:hover {
-    transform: scale(1.2);
-  }
+  #emoji-bar span { cursor: pointer; transition: transform 0.1s; }
+  #emoji-bar span:hover { transform: scale(1.2); }
 
   #chat-form {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     padding: 12px 20px;
-    background: #ffffff;
+    background: #fff;
     display: flex;
     justify-content: center;
     border-top: 1px solid #ccc;
-    z-index: 10;
+    z-index: 30;
   }
 
   #emoji-toggle {
@@ -136,7 +94,7 @@
     border: none;
     cursor: pointer;
     font-size: 24px;
-    margin-right: 10px;
+    margin-right: 8px;
   }
 
   #chat-form textarea {
@@ -160,95 +118,109 @@
     cursor: pointer;
     height: 45px;
   }
+
+  @media (max-width:600px){
+    #chat-container { padding:10px 5px; }
+    #chat-form textarea { font-size:16px; }
+    #emoji-bar { font-size:20px; gap:6px; padding:10px; justify-content:flex-start; }
+  }
+
+  @media (max-width:350px){
+    #emoji-bar { max-height:30vh; overflow-y:auto; }
+  }
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("chat-form");
-    const textarea = document.getElementById("wiadomosc");
-    const chatContainer = document.getElementById("chat-container");
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('chat-form');
+    const textarea = document.getElementById('wiadomosc');
+    const chatContainer = document.getElementById('chat-container');
+    const emojiBar = document.getElementById('emoji-bar');
+    const emojiToggle = document.getElementById('emoji-toggle');
 
-    function scrollToBottom() {
+    const scrollToBottom = () => {
       chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+    };
 
-    textarea.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
+    const toggleEmojiBar = () => {
+      emojiBar.style.display = emojiBar.style.display === 'flex' ? 'none' : 'flex';
+    };
+
+    const insertAtCursor = (emoji) => {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+      textarea.value = text.slice(0, start) + emoji + text.slice(end);
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+      textarea.focus();
+      emojiBar.style.display = 'none';
+    };
+
+    const addRow = (cls, text) => {
+      const row = document.createElement('div');
+      row.className = `message-row ${cls}`;
+      row.setAttribute('role', 'listitem');
+      const bubble = document.createElement('div');
+      bubble.className = `message ${cls === 'user' ? 'user-message' : 'bot-message'}`;
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      chatContainer.appendChild(row);
+    };
+
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        form.dispatchEvent(new Event("submit"));
+        form.dispatchEvent(new Event('submit'));
       }
     });
 
-    const emojiBar = document.getElementById("emoji-bar");
-    const emojiToggle = document.getElementById("emoji-toggle");
+    emojiToggle.addEventListener('click', toggleEmojiBar);
 
-    if (emojiToggle && emojiBar) {
-      emojiToggle.addEventListener("click", function () {
-        emojiBar.style.display = emojiBar.style.display === "flex" ? "none" : "flex";
-      });
+    emojiBar.addEventListener('click', (e) => {
+      if (e.target.tagName === 'SPAN') insertAtCursor(e.target.textContent);
+    });
 
-      emojiBar.addEventListener("click", function (e) {
-        if (e.target.tagName === "SPAN") {
-          textarea.value += e.target.textContent;
-          textarea.focus();
-          emojiBar.style.display = "none";
-        }
-      });
-    }
-
-    form.addEventListener("submit", function (e) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const userMessage = textarea.value.trim();
       if (!userMessage) return;
 
-      const userRow = document.createElement("div");
-      userRow.className = "message-row user";
-      const userBubble = document.createElement("div");
-      userBubble.className = "message user-message";
-      userBubble.textContent = userMessage;
-      userRow.appendChild(userBubble);
-      chatContainer.appendChild(userRow);
+      addRow('user', userMessage);
       scrollToBottom();
+      textarea.value = '';
 
-      textarea.value = "";
-
-      fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage })
-      })
-        .then(res => res.json())
-        .then(data => {
-          const botRow = document.createElement("div");
-          botRow.className = "message-row bot";
-          const botBubble = document.createElement("div");
-          botBubble.className = "message bot-message";
-          botBubble.textContent = "";
-          botRow.appendChild(botBubble);
-          chatContainer.appendChild(botRow);
-          scrollToBottom();
-
-          let i = 0;
-          function typeWriter() {
-            if (i < data.response.length) {
-              botBubble.textContent += data.response.charAt(i);
-              i++;
-              scrollToBottom();
-              setTimeout(typeWriter, 15);
-            }
-          }
-          typeWriter();
-        })
-        .catch(() => {
-          const errorRow = document.createElement("div");
-          errorRow.className = "message-row bot";
-          const errorBubble = document.createElement("div");
-          errorBubble.className = "message bot-message";
-          errorBubble.textContent = "Wystąpił błąd przy łączeniu z serwerem.";
-          errorRow.appendChild(errorBubble);
-          chatContainer.appendChild(errorRow);
-          scrollToBottom();
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage })
         });
+        if (!res.ok) throw new Error('server');
+        const data = await res.json();
+
+        const row = document.createElement('div');
+        row.className = 'message-row bot';
+        row.setAttribute('role', 'listitem');
+        const bubble = document.createElement('div');
+        bubble.className = 'message bot-message';
+        row.appendChild(bubble);
+        chatContainer.appendChild(row);
+
+        let i = 0;
+        const text = data.response;
+        const type = () => {
+          if (i < text.length) {
+            bubble.textContent += text.charAt(i++);
+            scrollToBottom();
+            setTimeout(type, 20);
+          }
+        };
+        type();
+
+      } catch (err) {
+        addRow('bot', 'Wystąpił błąd przy łączeniu z serwerem.');
+        scrollToBottom();
+      }
     });
 
     scrollToBottom();
