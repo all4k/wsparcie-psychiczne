@@ -19,9 +19,11 @@
 </div>
 
 <div id="emoji-bar" role="toolbar" aria-label="Emoji">
-  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span>
-  <span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🙌">🙌</span><span role="button" aria-label="🤔">🤔</span>
-  <span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span><span role="button" aria-label="😞">😞</span>
+  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span>
+  <span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span>
+  <span role="button" aria-label="🙌">🙌</span><span role="button" aria-label="🤔">🤔</span>
+  <span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span>
+  <span role="button" aria-label="😞">😞</span>
 </div>
 
 <form id="chat-form" autocomplete="off" role="form" aria-label="Wiadomość">
@@ -53,6 +55,7 @@
     word-wrap: break-word;
     font-size: 15px;
     color: #000;
+    background-color: #e6f3ff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
@@ -75,12 +78,16 @@
     z-index: 20;
   }
 
-  #emoji-bar span { cursor: pointer; transition: transform 0.1s; }
+  #emoji-bar span {
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
   #emoji-bar span:hover { transform: scale(1.2); }
 
   #chat-form {
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0; right: 0;
     padding: 12px 20px;
     background: #fff;
     display: flex;
@@ -124,7 +131,6 @@
     #chat-form textarea { font-size:16px; }
     #emoji-bar { font-size:20px; gap:6px; padding:10px; justify-content:flex-start; }
   }
-
   @media (max-width:350px){
     #emoji-bar { max-height:30vh; overflow-y:auto; }
   }
@@ -142,8 +148,17 @@
       chatContainer.scrollTop = chatContainer.scrollHeight;
     };
 
+    const updateEmojiPosition = () => {
+      emojiBar.style.bottom = form.offsetHeight + 'px';
+    };
+
     const toggleEmojiBar = () => {
-      emojiBar.style.display = emojiBar.style.display === 'flex' ? 'none' : 'flex';
+      if (emojiBar.style.display === 'flex') {
+        emojiBar.style.display = 'none';
+      } else {
+        updateEmojiPosition();
+        emojiBar.style.display = 'flex';
+      }
     };
 
     const insertAtCursor = (emoji) => {
@@ -167,6 +182,13 @@
       chatContainer.appendChild(row);
     };
 
+    const fetchWithTimeout = (url, options = {}, timeout = 20000) => {
+      return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
+      ]);
+    };
+
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -188,13 +210,15 @@
       addRow('user', userMessage);
       scrollToBottom();
       textarea.value = '';
+      emojiBar.style.display = 'none';
 
       try {
-        const res = await fetch('/api/chat', {
+        const res = await fetchWithTimeout('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: userMessage })
-        });
+        }, 20000);
+
         if (!res.ok) throw new Error('server');
         const data = await res.json();
 
@@ -216,13 +240,14 @@
           }
         };
         type();
-
       } catch (err) {
         addRow('bot', 'Wystąpił błąd przy łączeniu z serwerem.');
         scrollToBottom();
       }
     });
 
+    window.addEventListener('resize', updateEmojiPosition);
+    updateEmojiPosition();
     scrollToBottom();
   });
 </script>
