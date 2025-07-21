@@ -8,4 +8,11 @@ instance/
 flask_session/
 *.log
 .DS_Store
+__pycache__/
+*.pyc
+.env
+*.env
+flask_session/
+*.db
+.DS_Store
 

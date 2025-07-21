@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from openai import OpenAI
 import openai
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import json
 from datetime import datetime
 from functools import wraps
