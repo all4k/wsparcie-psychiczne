@@ -145,6 +145,14 @@
     const textarea = document.getElementById("wiadomosc");
     const chatContainer = document.getElementById("chat-container");
 
+    // Enter = wyślij
+    textarea.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event("submit"));
+      }
+    });
+
     function scrollToBottom() {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -159,14 +167,6 @@
         }
       });
     }
-
-    // Enter = wyślij
-    textarea.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        form.dispatchEvent(new Event("submit"));
-      }
-    });
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -203,18 +203,19 @@
         scrollToBottom();
 
         let i = 0;
-       function typeWriter() {
-         if (i < data.response.length) {
-         botBubble.textContent += data.response.charAt(i);
-         i++;
-         scrollToBottom();
-         setTimeout(typeWriter, 15);
-      } else {
-         setTimeout(scrollToBottom, 100); // ← przewiń jeszcze raz po zakończeniu
-      }
-    }
+        function typeWriter() {
+          if (i < data.response.length) {
+            botBubble.textContent += data.response.charAt(i);
+            i++;
+            scrollToBottom();
+            setTimeout(typeWriter, 15);
+          } else {
+            setTimeout(scrollToBottom, 100);
+          }
+        }
 
-
+        typeWriter();
+      })
       .catch(() => {
         const errorRow = document.createElement("div");
         errorRow.className = "message-row bot";
