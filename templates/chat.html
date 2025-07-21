@@ -19,11 +19,8 @@
 </div>
 
 <div id="emoji-bar" role="toolbar" aria-label="Emoji">
-  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span>
-  <span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span>
-  <span role="button" aria-label="🙌">🙌</span><span role="button" aria-label="🤔">🤔</span>
-  <span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span>
-  <span role="button" aria-label="😞">😞</span>
+  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🙌">🙌</span>
+  <span role="button" aria-label="🤔">🤔</span><span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span><span role="button" aria-label="😞">😞</span>
 </div>
 
 <form id="chat-form" autocomplete="off" role="form" aria-label="Wiadomość">
@@ -34,7 +31,6 @@
 
 <style>
   main { padding-bottom: 110px; }
-
   #chat-container {
     max-height: 70vh;
     overflow-y: auto;
@@ -43,11 +39,9 @@
     max-width: 700px;
     margin: 0 auto;
   }
-
   .message-row { display: flex; margin: 6px 0; }
   .message-row.user { justify-content: flex-end; }
   .message-row.bot { justify-content: flex-start; }
-
   .message {
     padding: 10px 14px;
     border-radius: 12px;
@@ -58,14 +52,13 @@
     background-color: #e6f3ff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
-
   .user-message { background-color: #dcf8c6; text-align: right; }
   .bot-message { background-color: #fff; border: 1px solid #ddd; text-align: left; }
-
   #emoji-bar {
     display: none;
     position: fixed;
-    left: 0; right: 0; bottom: 65px;
+    left: 0; right: 0;
+    bottom: 65px;
     justify-content: center;
     gap: 10px;
     padding: 8px;
@@ -73,183 +66,4 @@
     background: #f9f9f9;
     border-top: 1px solid #ddd;
     flex-wrap: wrap;
-    max-height: 40vh;
-    overflow-y: auto;
-    z-index: 20;
-  }
-
-  #emoji-bar span {
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
-  #emoji-bar span:hover { transform: scale(1.2); }
-
-  #chat-form {
-    position: fixed;
-    bottom: 0;
-    left: 0; right: 0;
-    padding: 12px 20px;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    border-top: 1px solid #ccc;
-    z-index: 30;
-  }
-
-  #emoji-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    margin-right: 8px;
-  }
-
-  #chat-form textarea {
-    flex: 1;
-    max-width: 700px;
-    padding: 10px;
-    resize: none;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    height: 45px;
-  }
-
-  #chat-form button[type="submit"] {
-    margin-left: 10px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    background: #4caf50;
-    color: white;
-    cursor: pointer;
-    height: 45px;
-  }
-
-  @media (max-width:600px){
-    #chat-container { padding:10px 5px; }
-    #chat-form textarea { font-size:16px; }
-    #emoji-bar { font-size:20px; gap:6px; padding:10px; justify-content:flex-start; }
-  }
-  @media (max-width:350px){
-    #emoji-bar { max-height:30vh; overflow-y:auto; }
-  }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('chat-form');
-    const textarea = document.getElementById('wiadomosc');
-    const chatContainer = document.getElementById('chat-container');
-    const emojiBar = document.getElementById('emoji-bar');
-    const emojiToggle = document.getElementById('emoji-toggle');
-
-    const scrollToBottom = () => {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    };
-
-    const updateEmojiPosition = () => {
-      emojiBar.style.bottom = form.offsetHeight + 'px';
-    };
-
-    const toggleEmojiBar = () => {
-      if (emojiBar.style.display === 'flex') {
-        emojiBar.style.display = 'none';
-      } else {
-        updateEmojiPosition();
-        emojiBar.style.display = 'flex';
-      }
-    };
-
-    const insertAtCursor = (emoji) => {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = textarea.value;
-      textarea.value = text.slice(0, start) + emoji + text.slice(end);
-      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-      textarea.focus();
-      emojiBar.style.display = 'none';
-    };
-
-    const addRow = (cls, text) => {
-      const row = document.createElement('div');
-      row.className = `message-row ${cls}`;
-      row.setAttribute('role', 'listitem');
-      const bubble = document.createElement('div');
-      bubble.className = `message ${cls === 'user' ? 'user-message' : 'bot-message'}`;
-      bubble.textContent = text;
-      row.appendChild(bubble);
-      chatContainer.appendChild(row);
-    };
-
-    const fetchWithTimeout = (url, options = {}, timeout = 20000) => {
-      return Promise.race([
-        fetch(url, options),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
-      ]);
-    };
-
-    textarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        form.dispatchEvent(new Event('submit'));
-      }
-    });
-
-    emojiToggle.addEventListener('click', toggleEmojiBar);
-
-    emojiBar.addEventListener('click', (e) => {
-      if (e.target.tagName === 'SPAN') insertAtCursor(e.target.textContent);
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const userMessage = textarea.value.trim();
-      if (!userMessage) return;
-
-      addRow('user', userMessage);
-      scrollToBottom();
-      textarea.value = '';
-      emojiBar.style.display = 'none';
-
-      try {
-        const res = await fetchWithTimeout('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMessage })
-        }, 20000);
-
-        if (!res.ok) throw new Error('server');
-        const data = await res.json();
-
-        const row = document.createElement('div');
-        row.className = 'message-row bot';
-        row.setAttribute('role', 'listitem');
-        const bubble = document.createElement('div');
-        bubble.className = 'message bot-message';
-        row.appendChild(bubble);
-        chatContainer.appendChild(row);
-
-        let i = 0;
-        const text = data.response;
-        const type = () => {
-          if (i < text.length) {
-            bubble.textContent += text.charAt(i++);
-            scrollToBottom();
-            setTimeout(type, 20);
-          }
-        };
-        type();
-      } catch (err) {
-        addRow('bot', 'Wystąpił błąd przy łączeniu z serwerem.');
-        scrollToBottom();
-      }
-    });
-
-    window.addEventListener('resize', updateEmojiPosition);
-    updateEmojiPosition();
-    scrollToBottom();
-  });
-</script>
-
-{% endblock %}
+    max-height
