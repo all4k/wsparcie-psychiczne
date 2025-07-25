@@ -19,7 +19,7 @@
 </div>
 
 <div id="emoji-bar" role="toolbar" aria-label="Emoji">
-  <span role="button" aria-label="��">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🤜">🤜</span>
+  <span role="button" aria-label="😀">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🤜">🤜</span>
   <span role="button" aria-label="🤔">🤔</span><span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span><span role="button" aria-label="😞">😞</span>
 </div>
 
@@ -131,7 +131,9 @@
     const emojiToggle = document.getElementById('emoji-toggle');
 
     const scrollToBottom = () => {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 30);
     };
 
     const updateEmojiPosition = () => {
@@ -164,7 +166,7 @@
       chatContainer.appendChild(row);
     };
 
-    const fetchWithTimeout = (url, options = {}, timeout = 20000) => {
+    const fetchWithTimeout = (url, options = {}, timeout = 60000) => {
       return Promise.race([
         fetch(url, options),
         new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
@@ -198,7 +200,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: userMessage })
-        }, 20000);
+        }, 60000);
 
         if (!res.ok) throw new Error('server');
 
@@ -228,6 +230,8 @@
               bubble.textContent += text.charAt(i++);
               scrollToBottom();
               setTimeout(type, 20);
+            } else {
+              setTimeout(scrollToBottom, 50);
             }
           };
           type();
