@@ -6,20 +6,22 @@
 
 <div id="chat-container" role="log" aria-live="polite" aria-label="Historia konwersacji">
   {% for wpis in historia %}
-    {% if wpis.autor == "AI" %}
-      <div class="message-row bot" role="listitem">
-        <div class="message bot-message">{{ wpis.wiadomosc }}</div>
-      </div>
-    {% else %}
-      <div class="message-row user" role="listitem">
-        <div class="message user-message">{{ wpis.wiadomosc }}</div>
-      </div>
+    {% if wpis.wiadomosc %}
+      {% if wpis.autor == "AI" %}
+        <div class="message-row bot" role="listitem">
+          <div class="message bot-message">{{ wpis.wiadomosc }}</div>
+        </div>
+      {% else %}
+        <div class="message-row user" role="listitem">
+          <div class="message user-message">{{ wpis.wiadomosc }}</div>
+        </div>
+      {% endif %}
     {% endif %}
   {% endfor %}
 </div>
 
 <div id="emoji-bar" role="toolbar" aria-label="Emoji">
-  <span role="button" aria-label="😀">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🤜">🤜</span>
+  <span role="button" aria-label="😀">😀</span><span role="button" aria-label="😢">😢</span><span role="button" aria-label="😡">😡</span><span role="button" aria-label="❤️">❤️</span><span role="button" aria-label="🫋">🫋</span>
   <span role="button" aria-label="🤔">🤔</span><span role="button" aria-label="🔥">🔥</span><span role="button" aria-label="💤">💤</span><span role="button" aria-label="😞">😞</span>
 </div>
 

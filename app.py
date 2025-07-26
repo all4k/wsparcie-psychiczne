@@ -56,35 +56,29 @@ def api_chat():
         session["historia"] = []
 
     historia = session["historia"]
-
     system_prompt = "Jesteś wspierającym asystentem psychologicznym."
 
-    def generate():
-        yield '{"response":"'
-        try:
-            for chunk in client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": message}
-                ],
-                stream=True
-            ):
-                content = chunk.choices[0].delta.content or ""
-                yield content
-        except Exception as e:
-            print("Błąd w generate:", e)
-        yield '"}'
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message}
+            ]
+        )
+        answer = response.choices[0].message.content
+    except Exception as e:
+        print("Błąd w API:", e)
+        answer = "Wystąpił błąd podczas generowania odpowiedzi."
 
-    # Zapisz do historii (tutaj, gdzie jest jeszcze dostęp do session)
     historia.append({
         "czas": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "user": message,
-        "ai": "(strumieniowana odpowiedź)"
+        "ai": answer
     })
     session["historia"] = historia
 
-    return Response(generate(), content_type="application/json")
+    return jsonify({"response": answer})
 
 
 @app.route("/login", methods=["GET", "POST"])

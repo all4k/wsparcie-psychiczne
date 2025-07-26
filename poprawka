@@ -1,0 +1,329 @@
+diff --git a/templates/chat.html b/templates/chat.html
+index 19f4babeaced9ac2e537299b1caca238301a83bd..2e2458b9452812092431b75ec2b92d71cb8cbbd4 100644
+--- a/templates/chat.html
++++ b/templates/chat.html
+@@ -10,182 +10,211 @@
+       <div class="message-row bot">
+         <div class="message bot-message">{{ wpis.wiadomosc }}</div>
+       </div>
+     {% else %}
+       <div class="message-row user">
+         <div class="message user-message">{{ wpis.wiadomosc }}</div>
+       </div>
+     {% endif %}
+   {% endfor %}
+ </div>
+ 
+ <!-- Pasek emoji -->
+ <div id="emoji-bar">
+   <span>😀</span>
+   <span>😢</span>
+   <span>😡</span>
+   <span>❤️</span>
+   <span>🙌</span>
+   <span>🤔</span>
+   <span>��</span>
+   <span>💤</span>
+   <span>😞</span>
+ </div>
+ 
+ <form id="chat-form">
++  <button type="button" id="emoji-toggle">😊</button>
+   <textarea id="wiadomosc" name="wiadomosc" rows="1" placeholder="Napisz wiadomość..." required></textarea>
+   <button type="submit">Wyślij</button>
+ </form>
+ 
+ <style>
++  body {
++    margin: 0;
++    background: #f7f8fa;
++  }
++
++  main {
++    padding-bottom: 110px;
++  }
++
+   #chat-container {
+     max-height: 70vh;
+     overflow-y: auto;
+     padding: 10px;
+-    margin-bottom: 110px;
++    margin-bottom: 0;
+     width: 100%;
+     max-width: 700px;
+     margin-left: auto;
+     margin-right: auto;
+   }
+ 
+   .message-row {
+     display: flex;
+     margin: 6px 0;
+   }
+ 
+   .message-row.user {
+     justify-content: flex-end;
+   }
+ 
+   .message-row.bot {
+     justify-content: flex-start;
+   }
+ 
+   .message {
+     padding: 10px 14px;
+     border-radius: 12px;
+     max-width: 75%;
+     word-wrap: break-word;
+     font-size: 15px;
+     color: #000;
+     background-color: #e6f3ff;
+     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+   }
+ 
+   .user-message {
+     background-color: #dcf8c6;
+     text-align: right;
+   }
+ 
+   .bot-message {
+     background-color: #ffffff;
+     border: 1px solid #ddd;
+     text-align: left;
+   }
+ 
+   #emoji-bar {
+-    display: flex;
++    display: none;
++    position: fixed;
++    bottom: 60px;
++    left: 0;
++    right: 0;
+     justify-content: center;
+     gap: 10px;
+     padding: 8px;
+     font-size: 24px;
+     background-color: #f9f9f9;
+     border-top: 1px solid #ddd;
+     flex-wrap: wrap;
++    z-index: 9;
+   }
+ 
+   #emoji-bar span {
+     cursor: pointer;
+     transition: transform 0.1s;
+   }
+ 
+   #emoji-bar span:hover {
+     transform: scale(1.2);
+   }
+ 
+   #chat-form {
+     position: fixed;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     padding: 12px 20px;
+     background: #ffffff;
+     display: flex;
+     justify-content: center;
+     border-top: 1px solid #ccc;
+     z-index: 10;
+   }
+ 
++  #emoji-toggle {
++    background: none;
++    border: none;
++    cursor: pointer;
++    font-size: 24px;
++    margin-right: 10px;
++  }
++
+   #chat-form textarea {
+     flex: 1;
+     max-width: 700px;
+     padding: 10px;
+     resize: none;
+     border-radius: 20px;
+     border: 1px solid #ccc;
+     font-size: 14px;
+     height: 45px;
+   }
+ 
+   #chat-form button {
+     margin-left: 10px;
+     padding: 10px 20px;
+     border-radius: 20px;
+     border: none;
+     background: #4caf50;
+     color: white;
+     cursor: pointer;
+     height: 45px;
+   }
+ </style>
+ 
+ <script>
+   document.addEventListener("DOMContentLoaded", function () {
+     const form = document.getElementById("chat-form");
+     const textarea = document.getElementById("wiadomosc");
+     const chatContainer = document.getElementById("chat-container");
+ 
+     // Enter = wyślij
+     textarea.addEventListener("keydown", function (e) {
+       if (e.key === "Enter" && !e.shiftKey) {
+         e.preventDefault();
+         form.dispatchEvent(new Event("submit"));
+       }
+     });
+ 
+     function scrollToBottom() {
+       chatContainer.scrollTop = chatContainer.scrollHeight;
+     }
+ 
+-    // Obsługa emoji
+     const emojiBar = document.getElementById("emoji-bar");
+-    if (emojiBar) {
++    const emojiToggle = document.getElementById("emoji-toggle");
++
++    if (emojiToggle && emojiBar) {
++      emojiToggle.addEventListener("click", function () {
++        emojiBar.style.display = emojiBar.style.display === "flex" ? "none" : "flex";
++      });
++
+       emojiBar.addEventListener("click", function (e) {
+         if (e.target.tagName === "SPAN") {
+           textarea.value += e.target.textContent;
+           textarea.focus();
++          emojiBar.style.display = "none";
+         }
+       });
+     }
+ 
+     form.addEventListener("submit", function (e) {
+       e.preventDefault();
+       const userMessage = textarea.value.trim();
+       if (!userMessage) return;
+ 
+       const userRow = document.createElement("div");
+       userRow.className = "message-row user";
+       const userBubble = document.createElement("div");
+       userBubble.className = "message user-message";
+       userBubble.textContent = userMessage;
+       userRow.appendChild(userBubble);
+       chatContainer.appendChild(userRow);
+       scrollToBottom();
+ 
+       textarea.value = "";
+ 
+       fetch("/api/chat", {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json"
+         },
+diff --git a/templates/layout.html b/templates/layout.html
+index bff466c4f1c702027f6a29e1e81c835e23a678b1..3e3da99242941910848bbca964915dad0e76622e 100644
+--- a/templates/layout.html
++++ b/templates/layout.html
+@@ -1,99 +1,75 @@
+ <!DOCTYPE html>
+ <html lang="pl">
+ <head>
+     <meta charset="UTF-8">
+     <title>{% block title %}Wsparcie Psychiczne{% endblock %}</title>
+-    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script>
+-
+     <style>
+         body {
+             font-family: Arial, sans-serif;
+             background-color: #f2f5f7;
+             margin: 0;
+             padding: 0;
++            display: flex;
++            flex-direction: column;
++            min-height: 100vh;
+         }
+         header {
+             background-color: #4caf50;
+             color: white;
+             padding: 15px;
+             text-align: center;
+         }
+         nav {
+             background-color: #388e3c;
+             padding: 10px;
+             text-align: center;
+         }
+         nav a {
+             color: white;
+             text-decoration: none;
+             margin: 0 15px;
+             font-weight: bold;
+         }
+         nav a:hover {
+             text-decoration: underline;
+         }
+         main {
+             padding: 20px;
+             max-width: 900px;
+             margin: auto;
+             background-color: white;
++            flex: 1;
+         }
+         footer {
+             background-color: #4caf50;
+             color: white;
+             text-align: center;
+             padding: 10px;
+-            position: relative;
+-            bottom: 0;
+-            margin-top: 40px;
++            margin-top: auto;
+         }
+     </style>
+-
+-    <script>
+-      document.addEventListener('DOMContentLoaded', () => {
+-        const picker = new EmojiButton({
+-          position: 'top-start',
+-          autoHide: true,
+-          theme: 'light'
+-        });
+-
+-        const emojiBtn = document.querySelector('#emoji-toggle');
+-        const textarea = document.getElementById('wiadomosc');
+-
+-        if (emojiBtn && textarea) {
+-          picker.on('emoji', emoji => {
+-            textarea.value += emoji;
+-            textarea.focus();
+-          });
+-
+-          emojiBtn.addEventListener('click', () => {
+-            picker.togglePicker(emojiBtn);
+-          });
+-        }
+-      });
+-    </script>
+ </head>
+ <body>
+     <header>
+         <h1>🧠 Wsparcie Psychiczne</h1>
+     </header>
+     <nav>
+         <a href="/">�� Strona Główna</a>
+         <a href="/chat">💬 Czat</a>
+         <a href="/forum">🧑‍🤝‍🧑 Forum</a>
+         <a href="/dziennik">📔 Dziennik</a>
+         <a href="/cwiczenie-oddechowe">🧘‍♂️ Oddech</a>
+         {% if session.get('user') %}
+             <span style="margin-left: 20px;">👤 {{ session.get('user') }}</span>
+             <a href="/logout" style="margin-left: 20px;">🚪 Wyloguj</a>
+         {% else %}
+             <a href="/login" style="margin-left: 20px;">🔐 Zaloguj</a>
+             <a href="/register">📝 Rejestracja</a>
+         {% endif %}
+     </nav>
+     <main>
+         {% block content %}{% endblock %}
+     </main>
+     <footer>
+         &copy; 2025 Wsparcie Psychiczne
+     </footer>
