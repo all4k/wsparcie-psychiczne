@@ -16,3 +16,8 @@ flask_session/
 *.db
 .DS_Store
 
+poprawka
+poprawka.patch
+patch
+porawka.patch
+import os
